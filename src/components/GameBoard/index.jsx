@@ -6,7 +6,7 @@ const initialGameBoard = [
 ];
 
 const GameBoard = ({ onSelectSquare, activePlayer, turns }) => {
-  
+
   // OPTION 1
   // const gameBoard = initialGameBoard.map((row, rowIndex) => {
   //   return row.map((cell, colIndex) => {
@@ -21,7 +21,6 @@ const GameBoard = ({ onSelectSquare, activePlayer, turns }) => {
   for (const turn of turns) {
     const { row, col } = turn;
     gameBoard[row][col] = turn.player;
-    
   }
 
   // const [gameBoard, setGameBoard] = useState(initialGameBoard);
