@@ -2,44 +2,22 @@ import Player from './components/Player/index.jsx';
 import GameBoard from './components/GameBoard/index.jsx';
 import Log from './components/Log/index.jsx';
 import { useState } from 'react';
-import { WINNING_COMBINATIONS } from './winning-combinitations.jsx';
 import GameOver from './components/GameOver/index.jsx';
-const initialGameBoard = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null]
-];
+import derivedWinner from './components/derivedWinner.uti.jsx';
+import {derivedGame} from './components/deriveGameboard.util.jsx';
 
+const PLAYERS_INITIAL = { X: 'Player1', O: 'Player2' };
 
 
 function App() {
 
   const [activePlayer, setActivePlayer] = useState('X');
   const [gameTurns, setGameTurns] = useState([]);
-  const [playerNames, setPlayerNames] = useState({ X: 'Player1', O: 'Player2' });
+  const [playerNames, setPlayerNames] = useState(...PLAYERS_INITIAL);
 
+  let gameBoard  = derivedGame.deriveGameboard(gameTurns, derivedGame.initialGameBoard);
 
-  let gameBoard = [...initialGameBoard.map(innerArr => [...innerArr])]; // Create a copy of the initial game board
-  for (const turn of gameTurns) {
-    const { row, col } = turn;
-    gameBoard[row][col] = turn.player;
-  }
-
-  let winner = null;
-  for (const combiniation of WINNING_COMBINATIONS) {
-    const firstSquare = gameBoard[combiniation[0].row][combiniation[0].column];
-    const secondSquare = gameBoard[combiniation[1].row][combiniation[1].column];
-    const thirdSquare = gameBoard[combiniation[2].row][combiniation[2].column];
-
-    if (firstSquare && firstSquare === secondSquare && secondSquare === thirdSquare) {
-      winner = firstSquare;
-      console.log(playerNames[winner], 'is the winner');
-      console.log('winner found', winner);
-      console.log('winning combiniation', combiniation);
-    }
-  }
-
-
+  let winner = derivedWinner(gameBoard, playerNames);
 
   const handleSelectSquare = (rowIndex, colIndex) => {
     console.log(`handleSelectSquare Row: ${rowIndex}, Column: ${colIndex}`);
@@ -89,21 +67,13 @@ function App() {
   const hasDraw = gameTurns.length === 9 && !winner;
 
   const handelRestart = () => {
-    setGameTurns(prev=>[]);
+    setGameTurns([]);
     setActivePlayer('X');
-    setPlayerNames(prev => {
-      return { ...prev, X: 'Player1', O: 'Player2' }
-    });
-    // setGameTurns((prev)=>{
-    //   return prev.map(turn => {
-    //     return {
-    //       ...turn,
-    //       players: { X: 'Player1', O: 'Player2' }
-    //     }
-    //   });
-    // });
+    setPlayerNames(prev => ({ ...prev, ...PLAYERS_INITIAL}));
+
     winner = null;
-    gameBoard = initialGameBoard;
+    gameBoard = derivedGame.initialGameBoard;
+    
     console.log('Game restarted');
   }
 

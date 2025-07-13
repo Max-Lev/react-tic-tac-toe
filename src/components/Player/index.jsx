@@ -36,8 +36,6 @@ const Player = ({ initialName, symbol, children, isActive, onNameChange, ...prop
     );
   }
 
-
-
   return <>
 
     <li className={isActive ? 'active' : undefined} id="player1" {...props}>
